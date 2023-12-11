@@ -43,16 +43,19 @@
                                 listItem.addEventListener('click', () => {
                                     // Toggle a class to indicate completion
                                     listItem.classList.toggle('completed');
+
                                     if (listItem.classList.contains('completed')) {
                                          // Move the completed item to the bottom
                                          followersList.appendChild(listItem);
-                                        window.open(`https://www.instagram.com/${username}`, '_blank');
                                     } else {
-                                        // Move the uncrossed item back to the uncrossed list
-                                        uncrossedList.appendChild(listItem);
+                                        // Move the item back to its original position
+                                        followersList.insertBefore(listItem, followersList.firstChild);
                                     }
-                                })
-                               
+                                    if (listItem.classList.contains('completed')) {
+                                        window.open(`https://www.instagram.com/${username}`, '_blank');
+                                    } 
+                                    
+                                });
 
 
                                 followersList.appendChild(listItem);
