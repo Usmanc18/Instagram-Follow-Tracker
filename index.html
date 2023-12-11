@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Followers Checker</title>
+</head>
+<body>
+    <h1>Followers Checker</h1>
+    <button onclick="checkFollowers()">Check Followers</button>
+    <div id="followersList"></div>
+
+    <script>
+        function checkFollowers() {
+            // Replace with your file paths
+            const followersFilePath = 'https://gist.githubusercontent.com/Usmanc18/c483afe3562a2dd38bbe2358ace99fd4/raw/09da2b7df59b0456edec9f4e231e3702f97bc6f8/followers_1.json';
+            const followingFilePath = 'https://gist.githubusercontent.com/Usmanc18/c483afe3562a2dd38bbe2358ace99fd4/raw/56557a7095012f2b7003e63f93f1decc40b0568f/following.json';
+
+            // Read follower and following data from files
+            fetch(followersFilePath)
+                .then(response => response.json())
+                .then(followersData => {
+                    fetch(followingFilePath)
+                        .then(response => response.json())
+                        .then(followingData => {
+                            // Extract usernames from the data 
+                            console.log('followersdata;',followersData);
+                            console.log('followingdata;',followingData);
+
+                            const followers = followersData.map(entry => entry.string_list_data[0].value);
+                            const following = followingData.relationships_following.map(entry => entry.string_list_data[0].value);
+
+                            // Find users you follow that do not follow you back
+                            const notFollowingBack = following.filter(username => !followers.includes(username));
+                            const followersList = document.getElementById('followersList');
+                            followersList.innerHTML = '';
+
+                            notFollowingBack.forEach(username => {
+                                const listItem = document.createElement('li');
+                                listItem.textContent = username;
+
+                                // Add a click event listener to each list item
+                                listItem.addEventListener('click', () => {
+                                    // Toggle a class to indicate completion
+                                    listItem.classList.toggle('completed');
+                                    if (listItem.classList.contains('completed')) {
+                                         // Move the completed item to the bottom
+                                         followersList.appendChild(listItem);
+                                        window.open(`https://www.instagram.com/${username}`, '_blank');
+                                    } else {
+                                        // Move the uncrossed item back to the uncrossed list
+                                        uncrossedList.appendChild(listItem);
+                                    }
+                                })
+                               
+
+
+                                followersList.appendChild(listItem);
+                            });
+                            });
+                            // Display the results
+                            
+                      
+                })
+                .catch(error => console.error('Error reading followers_1.json:', error));
+        }
+    </script>
+     <style>
+        /* Add some basic styling for the to-do list items */
+        li {
+            cursor: pointer;
+            padding: 5px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+        }
+    </style>
+</body>
+</html>
